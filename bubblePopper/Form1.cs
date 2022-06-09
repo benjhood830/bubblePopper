@@ -21,12 +21,16 @@ namespace bubblePopper
         List<Rectangle> yellowBubbles = new List<Rectangle>();
         List<Rectangle> playerShots = new List<Rectangle>();
 
-        List<int> bubbleSpeeds = new List<int>();
+        //List<int> bubbleSpeeds = new List<int>();
         //List<string> bubbleColours = new List<string>();
         int bubbleSize = 20;
         int playershotSize = 14;
 
         int score = 0;
+        int timer;
+        int bubbleSpeeds = 1;
+        float finalBubbleSpeed;
+
 
         bool ADown = false;
         bool DDown = false;
@@ -52,20 +56,21 @@ namespace bubblePopper
         public bubblePopper()
         {
             InitializeComponent();
+            finalBubbleSpeed = (float)bubbleSpeeds * 0.5f;
         }
 
         private void GameInitialize()
         {
             titleLabel.Text = "";
             subtitleLabel.Text = "";
-
+                                                                            
 
             player.X = this.ClientSize.Width / 2 - player.Width / 2;
             player.Y = this.ClientSize.Height - player.Height;
-                ;
+            
             player.Width = 40;
             player.Height = 10;
-
+            
             gameTimer.Enabled = true;
 
             gameState = "running";
@@ -74,15 +79,25 @@ namespace bubblePopper
         }
         private void gameTimer_Tick(object sender, EventArgs e)
         {
-
-            int randValue = randGen.Next(0, 401);
-
-            if (randValue < 100)
+            timer++;
+            if (timer %20 == 1)
             {
-                int x = randGen.Next(0, 80);
-                greenBubbles.Add(new Rectangle(x, 0, bubbleSize, bubbleSize));
+                int randBall = randGen.Next(2, 6);
 
-                bubbleSpeeds.Add(randGen.Next(1, 1));
+
+                int x = 0;
+                
+                for (int i = 0; i < randBall; i++)
+                {
+                    greenBubbles.Add(new Rectangle(x, 1, bubbleSize, bubbleSize));
+                    x = x + bubbleSize;
+                }
+
+
+
+
+
+
             }
 
             int playershotX = player.X;
@@ -126,7 +141,7 @@ namespace bubblePopper
             for (int i = 0; i < greenBubbles.Count(); i++)
             {
                 //find the new postion of y based on speed 
-                int y = greenBubbles[i].Y + bubbleSpeeds[i];
+                int y = greenBubbles[i].Y + (int)finalBubbleSpeed;
 
                 //replace the rectangle in the list with updated one using new y 
                 greenBubbles[i] = new Rectangle(greenBubbles[i].X, y, bubbleSize, bubbleSize);
