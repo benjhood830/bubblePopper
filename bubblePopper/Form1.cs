@@ -162,11 +162,19 @@ namespace bubblePopper
                     {
                         int bubbleY = greenBubbles[i].Y;
 
-                        if (greenBubbles[i].X == bubbleY)
-                        greenBubbles.RemoveAt(i);
-                        bubbleColours.RemoveAt(i);
                         playerShots.RemoveAt(a);
                         shotColours.RemoveAt(a);
+
+                        for (int x = 0; x < greenBubbles.Count(); x++)
+                        {
+                            if (greenBubbles[x].Y == bubbleY)
+                            {
+                                greenBubbles.RemoveAt(x);
+                                bubbleColours.RemoveAt(x);
+                                
+                            }
+                        }
+                       
 
                     }
                 }
