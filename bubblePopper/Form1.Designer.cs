@@ -37,7 +37,7 @@
             // 
             // gameTimer
             // 
-            this.gameTimer.Interval = 30;
+            this.gameTimer.Interval = 50;
             this.gameTimer.Tick += new System.EventHandler(this.gameTimer_Tick);
             // 
             // titleLabel
@@ -77,6 +77,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "bubblePopper";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Bubble Popper";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.bubblePopper_Paint);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.bubblePopper_KeyDown);
