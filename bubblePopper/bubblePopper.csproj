@@ -89,5 +89,8 @@
   <ItemGroup>
     <None Include="Resources\Background.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Ding Sound Effect %28128 kbps%29 %281%29.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

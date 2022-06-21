@@ -1,61 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace bubblePopper
 {
     public partial class bubblePopper : Form
     {
         Rectangle player = new Rectangle(280, 540, 40, 10);
-        Rectangle shot = new Rectangle(280, 530, 20, 20);
-        int playerSpeed = 10;
 
-        List<Rectangle> greenBubbles = new List<Rectangle>();
+        List<Rectangle> colorBubbles = new List<Rectangle>();
         List<Rectangle> playerShots = new List<Rectangle>();
         List<string> bubbleColours = new List<string>();
         List<string> shotColours = new List<string>();
 
-        //List<int> bubbleSpeeds = new List<int>();
-        //List<string> bubbleColours = new List<string>();
+        SoundPlayer ding = new SoundPlayer(Properties.Resources.Ding);
+
         int bubbleSize = 40;
         int playershotSize = 25;
         int randColor;
         int bubbleSpawn = 40;
-
-        int score = 0;
         int timer = 0;
         int bubbleSpeeds = 1;
         int shotSpeed = 10;
         int shotTimer = 0;
+        int playerSpeed = 10;
 
         bool ADown = false;
         bool DDown = false;
         bool spaceDown = false;
-        bool escDown = false;
-
-        SolidBrush redBrush = new SolidBrush(Color.Red);
-        SolidBrush greenBrush = new SolidBrush(Color.Green);
-        SolidBrush yellowBrush = new SolidBrush(Color.Yellow);
-        SolidBrush blueBrush = new SolidBrush(Color.Blue);
-        SolidBrush whiteBrush = new SolidBrush(Color.White);
-        SolidBrush purpleBrush = new SolidBrush(Color.Purple);
-        SolidBrush brush1 = new SolidBrush(Color.Chartreuse);
-        SolidBrush brush2 = new SolidBrush(Color.Chartreuse);
-        SolidBrush brush3 = new SolidBrush(Color.Chartreuse);
-        SolidBrush brush4 = new SolidBrush(Color.Chartreuse);
-
-        Pen blackPen = new Pen(Color.Black, 3);
-
         string gameState = "waiting";
 
+        SolidBrush redBrush = new SolidBrush(Color.Red);
+        SolidBrush yellowBrush = new SolidBrush(Color.Yellow);
+        SolidBrush blueBrush = new SolidBrush(Color.Blue);
+
+        //create random gen
         Random randGen = new Random();
-        int randValue = 0;
 
         public bubblePopper()
         {
@@ -64,39 +47,41 @@ namespace bubblePopper
 
         private void GameInitialize()
         {
+            //reset Labels
             titleLabel.Text = "";
             subtitleLabel.Text = "";
 
+            //spawn player in correct location
             player.X = this.ClientSize.Width / 2 - player.Width / 2;
             player.Y = this.ClientSize.Height - player.Height;
 
+            //declare new player size
             player.Width = 40;
             player.Height = 10;
-
+            //enable game timer
             gameTimer.Enabled = true;
-
+            //start running gamestate
             gameState = "running";
         }
         private void gameTimer_Tick(object sender, EventArgs e)
         {
+            //start timer for modulus comands and shot timer for shot cooldown
             timer++;
             shotTimer++;
 
-            //if (timer % 1000 == 0)
-            //{
-            //    bubbleSpeeds++; ;
-            //    bubbleSpawn--;
-            //}
-
+            //have the shot come out of where the player is currently located
             int playershotX = player.X;
             int playershotY = player.Y;
 
+            //if space is down and cooldown is ready
             if (spaceDown == true && gameState == "running" && shotTimer > 10)
             {
+                //add to payershots list 
                 playerShots.Add(new Rectangle(player.X, player.Y, playershotSize, playershotSize));
-
+                //random generator to pick colour
                 randColor = randGen.Next(1, 4);
 
+                //select colour
                 if (randColor == 1)
                 {
                     shotColours.Add("yellow");
@@ -109,9 +94,11 @@ namespace bubblePopper
                 {
                     shotColours.Add("blue");
                 }
+                //reset shot timer
                 shotTimer = 0;
             }
 
+            //how often balls spawn
             if (timer % bubbleSpawn == 1)
             {
                 int randgreenBall = 10;
@@ -119,11 +106,11 @@ namespace bubblePopper
 
                 for (int i = 0; i < randgreenBall; i++)
                 {
-                    greenBubbles.Add(new Rectangle(xGreen, -80, bubbleSize, bubbleSize));
+                    colorBubbles.Add(new Rectangle(xGreen, -80, bubbleSize, bubbleSize));
                     xGreen = xGreen + bubbleSize;
                 }
             }
-
+            //if timer is divisible by 40 then add new bubbles
             if (timer % 40 == 0)
             {
                 for (int i = 0; i < 10; i++)
@@ -143,8 +130,8 @@ namespace bubblePopper
                         bubbleColours.Add("blue");
                     }
                 }
-              
             }
+
             for (int i = 0; i < playerShots.Count(); i++)
             {
                 //find the new postion of y based on speed 
@@ -153,41 +140,44 @@ namespace bubblePopper
                 //replace the rectangle in the list with updated one using new y 
                 playerShots[i] = new Rectangle(playerShots[i].X, y, playershotSize, playershotSize);
             }
+            //if bubbles reach bottom of screen end game
+            for (int i = 0; i < colorBubbles.Count(); i++)
+            {
+                if (colorBubbles[i].Y == 600 - bubbleSize)
+                {
+                    Application.Exit();
+                }
+            }
 
-            for (int i = 0; i < greenBubbles.Count(); i++)
+            for (int i = 0; i < colorBubbles.Count(); i++)
             {
                 for (int a = 0; a < playerShots.Count; a++)
                 {
-                    if (greenBubbles[i].IntersectsWith(playerShots[a]))
+                    //if bubble and shots intersect
+                    if (colorBubbles[i].IntersectsWith(playerShots[a]))
                     {
-                        int bubbleY = greenBubbles[i].Y;
+                        int bubbleY = colorBubbles[i].Y;
 
                         playerShots.RemoveAt(a);
                         shotColours.RemoveAt(a);
+                        //play sound
+                        ding.Play();
 
-                        for (int x = 0; x < greenBubbles.Count(); x++)
+                        for (int x = 0; x < colorBubbles.Count(); x++)
                         {
-                            if (greenBubbles[x].Y == bubbleY)
-                            {
-                                greenBubbles.RemoveAt(x);
+                            if (colorBubbles[x].Y == bubbleY)
+                            {   //remove bubbles
+                                colorBubbles.RemoveAt(x);
                                 bubbleColours.RemoveAt(x);
-                                
+
                             }
                         }
-                       
-
                     }
                 }
             }
 
-            
-
             gameTimer.Enabled = true;
 
-            if (gameState == "waiting")
-            {
-                // player.Size = new Size(0, 0);
-            }
             //move player 
             if (ADown == true && player.X > 0 + 4)
             {
@@ -200,33 +190,14 @@ namespace bubblePopper
             }
 
             // move balls 
-            for (int i = 0; i < greenBubbles.Count(); i++)
+            for (int i = 0; i < colorBubbles.Count(); i++)
             {
                 //find the new postion of y based on speed 
-                int y = greenBubbles[i].Y + bubbleSpeeds;
+                int y = colorBubbles[i].Y + bubbleSpeeds;
 
                 //replace the rectangle in the list with updated one using new y 
-                greenBubbles[i] = new Rectangle(greenBubbles[i].X, y, bubbleSize, bubbleSize);
+                colorBubbles[i] = new Rectangle(colorBubbles[i].X, y, bubbleSize, bubbleSize);
             }
-
-            for (int i = 0; i < greenBubbles.Count(); i++)
-            {
-                if (greenBubbles[i].Y > this.Height - bubbleSize)
-                {
-                    //greenBubbles.RemoveAt(i);
-                    //bubbleColours.RemoveAt(i);
-                }
-            }
-
-            for (int i = 0; i < playerShots.Count(); i++)
-            {
-                if (playerShots[i].Y < this.Height - playershotSize)
-                {
-                    //playerShots.RemoveAt(i);
-                    //bubbleColours.RemoveAt(i);
-                }
-            }
-
 
             Refresh();
         }
@@ -243,9 +214,6 @@ namespace bubblePopper
                     break;
                 case Keys.Space:
                     spaceDown = false;
-                    break;
-                case Keys.Escape:
-                    escDown = false;
                     break;
             }
         }
@@ -264,32 +232,24 @@ namespace bubblePopper
                     spaceDown = true;
 
                     if (gameState == "waiting" || gameState == "over")
-
                     {
-                        //gameTimer.Enabled = true;
+                        //if space is pressed, start game
                         GameInitialize();
                     }
                     break;
-
                 case Keys.Escape:
-
                     if (gameState == "waiting" || gameState == "over")
-
                     {
+                        //if esc is pressed exit program
                         Application.Exit();
                     }
                     break;
             }
         }
-
         private void bubblePopper_Paint(object sender, PaintEventArgs e)
         {
             if (gameState == "running")
             {
-
-                //e.Graphics.FillRectangle(whiteBrush, player);
-                //e.Graphics.DrawRectangle(blackPen, player);
-
                 for (int i = 1; i < shotColours.Count(); i++)
                 {
                     if (shotColours[i] == "red")
@@ -305,24 +265,24 @@ namespace bubblePopper
                         e.Graphics.FillRectangle(yellowBrush, player);
                     }
                 }
-           
+
                 for (int i = 0; i < bubbleColours.Count(); i++)
                 {
-                    if (bubbleColours[i] == "red" )
+                    if (bubbleColours[i] == "red")
                     {
-                        e.Graphics.FillEllipse(redBrush, greenBubbles[i]);
+                        e.Graphics.FillEllipse(redBrush, colorBubbles[i]);
                     }
                     else if (bubbleColours[i] == "blue")
                     {
-                        e.Graphics.FillEllipse(blueBrush, greenBubbles[i]);
+                        e.Graphics.FillEllipse(blueBrush, colorBubbles[i]);
                     }
                     else if (bubbleColours[i] == "yellow")
                     {
-                        e.Graphics.FillEllipse(yellowBrush, greenBubbles[i]);
+                        e.Graphics.FillEllipse(yellowBrush, colorBubbles[i]);
                     }
                 }
 
-                for(int i = 0; i < shotColours.Count(); i++)
+                for (int i = 0; i < shotColours.Count(); i++)
                 {
                     if (shotColours[i] == "red")
                     {
@@ -337,22 +297,7 @@ namespace bubblePopper
                         e.Graphics.FillEllipse(yellowBrush, playerShots[i]);
                     }
                 }
-                //if(randColor == 1)
-                //{
-                //    e.Graphics.FillEllipse(yellowBrush, player);
-                //}
-                //else if(randColor == 2)
-                //{
-                //    e.Graphics.FillEllipse(redBrush, player);
-                //}
-                //else if (randColor == 3)
-                //{
-                //    e.Graphics.FillEllipse(blueBrush, player);
-                //}
             }
         }
     }
 }
-
-
-

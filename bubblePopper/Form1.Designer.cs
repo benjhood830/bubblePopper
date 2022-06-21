@@ -45,7 +45,7 @@
             this.titleLabel.BackColor = System.Drawing.Color.Transparent;
             this.titleLabel.Font = new System.Drawing.Font("Arcade", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.titleLabel.ForeColor = System.Drawing.Color.Lime;
-            this.titleLabel.Location = new System.Drawing.Point(22, 32);
+            this.titleLabel.Location = new System.Drawing.Point(38, 32);
             this.titleLabel.Name = "titleLabel";
             this.titleLabel.Size = new System.Drawing.Size(542, 32);
             this.titleLabel.TabIndex = 0;
@@ -56,7 +56,7 @@
             this.subtitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.subtitleLabel.Font = new System.Drawing.Font("Arcade", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.subtitleLabel.ForeColor = System.Drawing.Color.White;
-            this.subtitleLabel.Location = new System.Drawing.Point(7, 64);
+            this.subtitleLabel.Location = new System.Drawing.Point(25, 64);
             this.subtitleLabel.Name = "subtitleLabel";
             this.subtitleLabel.Size = new System.Drawing.Size(497, 32);
             this.subtitleLabel.TabIndex = 1;
